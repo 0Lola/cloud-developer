@@ -30,5 +30,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "jimp": "^0.6.4"
-  }
+  },
+  "engines": { "node" : "12.16.1" }
 }
