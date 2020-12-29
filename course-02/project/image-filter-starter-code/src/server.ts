@@ -8,7 +8,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   const app = express();
 
   // Set the network port
-  const port = process.env.PORT || 8082;
+  const port = process.env.PORT || 8080;
   
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
@@ -26,6 +26,26 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //    image_url: URL of a publicly accessible image
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
+  
+  app.get( "/filteredimage", async ( req, res ) => {
+       
+     // 1. validate the image_url query
+     const imageUrl = req.query.image_url;
+     if(!imageUrl) {
+          res.status(422);
+          res.send("Please query via 'image_url', try GET /filteredimage?image_url={{}} ")
+     }
+
+     // 2. call filterImageFromURL(image_url) to filter the image
+     const filterImage = await filterImageFromURL(imageUrl);
+
+     // 3. send the resulting file in the response
+     res.status(200);
+     res.sendFile(await filterImage);
+     // 4. deletes any files on the server on finish of the response
+     // res.on('end', () => deleteLocalFiles([filterImage]));
+
+   } );
 
   /**************************************************************************** */
 
